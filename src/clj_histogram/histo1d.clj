@@ -40,17 +40,32 @@
 
 (defn make-linear-binning [xmin nbins xmax]
   (let [width (/ (- xmax xmin) nbins)
-	bin-fn (fn [n] (make-bin (* n width) (* (+ n 1) width)))
+	bin-fn (fn [n] (make-bin (+ xmin (* n width))
+				 (+ xmin (* (+ n 1) width))))
 	bin-ids (range 0 nbins)]
     (map bin-fn bin-ids)))
 
-(defstruct histogram :name :binning :contents)
+;;(defstruct histogram :name :binning :contents)
 
 (defn make-histogram
   ([name binning x-coll]
      (make-histogram name binning x-coll (constantly 1.0)))
   ([name binning x-coll weight-fn]
-     (let [bin-grouper (fn [x] (bin-value-to-index binning x))
-	   bin-values (group-by bin-grouper x-coll)]
-       
-       
+     (let [nbins (count binning)
+	   bin-grouper (fn [x] (bin-value-to-index binning x))
+	   bin-content-groups (group-by bin-grouper x-coll)]
+       (loop [ind 0
+	      h []]
+	 (if (< ind nbins)
+	   (let [bin (nth binning ind)
+		 content (get bin-content-groups ind)
+		 weighted-content (map #(weight-fn bin %) content)
+		 bin-content (apply + weighted-content)
+		 new-bin (conj bin {:content bin-content})]
+	     (recur (+ ind 1) (conj h new-bin)))
+	   {:name name :histo-type :histo-1d :data h})))))
+
+(defn rndms [n]
+  (let [g (java.util.Random.)
+	gfn #(.nextGaussian g)]
+    (repeatedly n gfn)))
