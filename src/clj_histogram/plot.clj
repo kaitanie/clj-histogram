@@ -1,6 +1,7 @@
 (ns clj-histogram.plot
-  (use clj-histogram.histo1d)
-  (use [incanter core io charts stats]))
+  (:use clj-histogram.histo1d)
+  (:use [incanter core io charts stats pdf])
+  (:import [org.jfree.chart.axis LogarithmicAxis]))
 
 (defmulti to-xy-step-points (fn [h] (:histo-type h)))
 
@@ -24,6 +25,46 @@
 	x (:x p)
 	y (:y p)]
     (view (xy-plot x y))))
+
+(defn plain-plotting-style!
+  "Set the graphics settings to bare-bones black text/lines on
+  white background style."
+  [chart]
+  (let [p (.getPlot chart)
+	y-axis (.getRangeAxis p)
+	x-axis (.getDomainAxis p)
+	white java.awt.Color/WHITE
+	black java.awt.Color/BLACK
+	axis-settings (fn [axis] (doto axis
+				   (.setAxisLineVisible true)
+				   (.setAxisLinePaint black)
+				   (.setLabelPaint black)
+				   (.setTickMarkPaint black)
+				   (.setTickLabelPaint black)))]
+    (do
+      (doto chart
+	(.setBackgroundPaint white))
+      (doto p
+	(.setDomainGridlinesVisible false)
+	(.setRangeGridlinesVisible false)
+	(.setBackgroundPaint white))
+      (axis-settings x-axis)
+      (axis-settings y-axis))
+    chart))
+	
+(defn log-y-axis!
+  [chart]
+  (let [plot (.getPlot chart)
+	old-axis (.getRangeAxis plot)
+	label (.getLabel old-axis)
+	label-font (.getLabelFont old-axis)
+	log-y-axis (LogarithmicAxis. label)]
+;;	 (.setStrictValuesFlag false)
+    (doto log-y-axis
+      (.setLabelFont label-font)
+      (.setAllowNegativesFlag true))
+    (.setRangeAxis plot log-y-axis)
+    chart))
 
 (defn plot [histo-coll opt-map]
   (let [title (or (:title opt-map) (:name (first histo-coll)))
@@ -49,4 +90,16 @@
 	(add-lines plot x y
 		   :series-label name)))
     plot))
-	
+
+(defn example-plot []
+  (let [b (make-linear-binning -10.0 100 10.0)
+	h1 (make-histogram "h1" b (rndms 100000))
+	h2 (make-histogram "h2" b (rndms 100000))
+	pdf-file "./example-plot.pdf"
+	chart (log-y-axis! (plain-plotting-style! (plot [h1 h2] {:title "Gaussians"
+						:legend true
+						:ylabel "Counts"})))]
+    (do
+      (view chart)
+      (save-pdf chart pdf-file)
+      (println (str "Generated plot saved as " pdf-file)))))
