@@ -66,6 +66,19 @@
     (.setRangeAxis plot log-y-axis)
     chart))
 
+(defn log-x-axis!
+  [chart]
+  (let [plot (.getPlot chart)
+	old-axis (.getDomainAxis plot)
+	label (.getLabel old-axis)
+	label-font (.getLabelFont old-axis)
+	log-x-axis (LogarithmicAxis. label)]
+;;	 (.setStrictValuesFlag false)
+    (doto log-x-axis
+      (.setLabelFont label-font))
+    (.setDomainAxis plot log-x-axis)
+    chart))
+
 (defn plot [histo-coll opt-map]
   (let [title (or (:title opt-map) (:name (first histo-coll)))
 	xlabel (or (:xlabel opt-map) "x")
