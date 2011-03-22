@@ -48,6 +48,12 @@
 (defn data-row-energy [row]
   (nth row 3))
 
+(defn data-row-theta [row]
+  (nth row 7))
+
+(defn data-row-phi [row]
+  (nth row 8))
+
 (defn proton? [row]
   (let [z (data-row-z row)
 	a (data-row-a row)]
