@@ -7,6 +7,35 @@
 (defn spl [s]
   (.split s " "))
 
+(defn parse-particle-line [line]
+  (let [splitter-fn (fn [#^String line] (.split line "[\t,\" \"]"))
+	parse-fn (#^Double fn [#^String entry] (double (Double/parseDouble entry)))]
+    (map parse-fn (drop 1 (into [] (splitter-fn line))))))
+
+(defn process-data-file [filename name binning filter-fn selector-fn normalizer-fn]
+  (let [input (FileReader. filename)  ;;input (InputStreamReader. System/in)
+	reader (BufferedReader. input)
+	strbuf (StringBuffer.)
+	buf (char-array 4096)
+	content (double-array (count binning))]
+    (loop [i 0]
+      (let [current-line (.readLine reader)]
+	  (if (nil? current-line)
+	    (do
+	      (println "Returning...")
+	      content)
+	    (do
+;;	      (println current-line)
+	  (let [particle (parse-particle-line current-line)]
+	    (do
+;;	      (println (str particle))
+	      (if (filter-fn particle)
+		(let [d (selector-fn particle)
+		      idx (bin-value-to-index binning d)
+		      bin (nth binning idx)]
+		  (aset content idx (+ (aget content idx) (normalizer-fn bin d)))))
+	      (recur 1)))))))))
+
 (defn read-data [#^String file]
   (let [frdr (FileReader. file)
 	brdr (BufferedReader. frdr)
