@@ -65,6 +65,31 @@
 	     (recur (+ ind 1) (conj h new-bin)))
 	   {:name name :histo-type :histo-1d :data h})))))
 
+(defn histo1d-add [h1 h2]
+  (let [data1 (:data h1)
+        data2 (:data h2)
+        equal-xmins (= (map :xmin data1) (map :xmin data2))
+        equal-xmaxes (= (map :xmax data1) (map :xmax data2))]
+    (if (and equal-xmins equal-xmaxes)
+      (let [newname (str (:name h1) "+" (:name h2))
+            xmins1 (map :xmin data1)
+            xmins2 (map :xmin data2)
+            xmaxs1 (map :xmax data1)
+            xmaxs2 (map :xmax data2)
+            contents1 (map :content data1)
+            contents2 (map :content data2)
+            sum-contents (map (fn [[x y]] (+ x y))
+                              (partition 2
+                                         (interleave contents1
+                                                     contents2)))]
+        {:name newname
+         :histo-type :histo-1d
+         :data (map (fn [[xmin xmax content]]
+                      {:xmin xmin :xmax xmax :content content})
+                    (partition 3 (interleave xmins1 xmaxs1 sum-contents)))})
+      {:error-message "Not equal binnings. Can't sum!"})))
+
+
 (defn rndms [n]
   (let [g (java.util.Random.)
 	gfn #(.nextGaussian g)]
