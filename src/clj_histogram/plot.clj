@@ -109,9 +109,11 @@
 	h1 (make-histogram "h1" b (rndms 100000))
 	h2 (make-histogram "h2" b (rndms 100000))
 	pdf-file "./example-plot.pdf"
-	chart (log-y-axis! (plain-plotting-style! (plot [h1 h2] {:title "Gaussians"
-						:legend true
-						:ylabel "Counts"})))]
+        chart (-> (plot [h1 h2] {:title "Gaussians"
+                                 :legend true
+                                 :ylabel "Counts"})
+                  plain-plotting-style!
+                  log-y-axis!)]
     (do
       (view chart)
       (save-pdf chart pdf-file)
