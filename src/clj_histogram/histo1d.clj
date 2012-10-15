@@ -35,8 +35,12 @@
                (< x (:xmin center)) (recur lower next-pos)
                (>= x (:xmax center)) (recur next-pos upper)))))))))
 
-(defn make-bin [xmin xmax]
-  {:xmin xmin :xmax xmax})
+(defn make-bin
+  "Create 1-dimensional bin"
+  [xmin xmax]
+  (if (> xmax xmin)
+    {:xmin xmin :xmax xmax}
+    {:error "xmax > xmin!"}))
 
 (defn make-linear-binning [xmin nbins xmax]
   (let [width (/ (- xmax xmin) nbins)
