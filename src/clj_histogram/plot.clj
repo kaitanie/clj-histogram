@@ -11,19 +11,19 @@
 
 (defmethod to-xy-step-points :histo-1d [h]
   (let [name (:name h)
-	data (:data h)
-	xmaxs (map :xmax data)
-	xmins (map :xmin data)
-	ys (map :content data)
-	xpoints (interleave xmins xmaxs)
-	ypoints (interleave ys ys)
-	points {:x xpoints :y ypoints :name name}]
+        data (:data h)
+        xmaxs (map :xmax data)
+        xmins (map :xmin data)
+        ys (map :content data)
+        xpoints (interleave xmins xmaxs)
+        ypoints (interleave ys ys)
+        points {:x xpoints :y ypoints :name name}]
     points))
 
 (defn plot-histo [h]
   (let [p (to-xy-step-points h)
-	x (:x p)
-	y (:y p)]
+        x (:x p)
+        y (:y p)]
     (view (xy-plot x y))))
 
 (defn plain-plotting-style!
