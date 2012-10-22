@@ -81,40 +81,72 @@
 
 (defn plot [histo-coll opt-map]
   (let [title (or (:title opt-map) (:name (first histo-coll)))
-	xlabel (or (:xlabel opt-map) "x")
-	ylabel (or (:ylabel opt-map) "y")
-	legend (or (:legend opt-map) false)
-	xys (map to-xy-step-points histo-coll)
-	first-xys (first xys)
-	first-x (:x first-xys)
-	first-y (:y first-xys)
-	first-name (:name first-xys)
-	remaining-xys (rest xys)
-	plot (xy-plot first-x first-y
-		      :title title
-		      :legend legend
-		      :series-label first-name
-		      :x-label xlabel
-		      :y-label ylabel)]
+        xlabel (or (:xlabel opt-map) "X axis")
+        ylabel (or (:ylabel opt-map) "Y axis")
+        legend (or (:legend opt-map) false)
+        xys (map to-xy-step-points histo-coll)
+        first-xys (first xys)
+        first-x (:x first-xys)
+        first-y (:y first-xys)
+        first-name (:name first-xys)
+        remaining-xys (rest xys)
+        plot (xy-plot first-x first-y
+                      :title title
+                      :legend legend
+                      :series-label first-name
+                      :x-label xlabel
+                      :y-label ylabel)]
     (doseq [p remaining-xys]
       (let [x (:x p)
-	    y (:y p)
-	    name (:name p)]
-	(add-lines plot x y
-		   :series-label name)))
+            y (:y p)
+            name (:name p)]
+        (add-lines plot x y
+                   :series-label name)))
     plot))
 
 (defn example-plot []
   (let [b (make-linear-binning -10.0 100 10.0)
-	h1 (make-histogram "h1" b (rndms 100000))
-	h2 (make-histogram "h2" b (rndms 100000))
-	pdf-file "./example-plot.pdf"
+        h1 (make-histogram "h1" b (rndms 100000))
+        h2 (make-histogram "h2" b (rndms 100000))
+        pdf-file "./example-plot.pdf"
         chart (-> (plot [h1 h2] {:title "Gaussians"
                                  :legend true
                                  :ylabel "Counts"})
                   plain-plotting-style!
-                  log-y-axis!)]
+                  )]
     (do
       (view chart)
       (save-pdf chart pdf-file)
       (println (str "Generated plot saved as " pdf-file)))))
+
+(defn data-lines->seq [file]
+  (let [d (slurp file)
+        dd  (.split d "\n")
+        n (map #(Double/parseDouble %) dd)]
+    n))
+
+(defn ex1 []
+  (let [n (data-lines->seq "../neutrons/NeutronFramework/he3tube/data_He3Tube.dat")
+        binning (make-linear-binning 0.0 500 30000.0)
+        h1 (make-histogram "h2" binning n)
+        p (-> (plot [h1] {:title "Neutron" :xlabel "Energy" :ylabel "Counts"})
+              log-y-axis!
+              plain-plotting-style!)]
+    (do
+      (view p)
+      (save p "he3_rev2.png" :width 900 :height 700))))
+
+(defn ex2 []
+  (let [d1 (data-lines->seq "../neutrons/NeutronFramework/he3tube/data_He3Tube.dat")
+        d2 (data-lines->seq "../neutrons/NeutronFramework/he3tube/data_He3Tube_normal_density.dat")
+        binning (make-linear-binning 0.0 500 30000.0)
+        h1 (make-histogram "h1" binning d1)
+        h2 (make-histogram "h2" binning d2)
+        p (-> (plot [h1 h2] {:title "Neutron" :xlabel "Energy" :ylabel "Counts"})
+              log-y-axis!
+              plain-plotting-style!)]
+    (do
+      (set-x-label p "Energy")
+      (set-y-label p "Counts")
+      (view p)
+      (save p "hcomp.png" :width 900 :height 700))))
