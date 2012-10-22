@@ -31,35 +31,35 @@
   white background style."
   [chart]
   (let [p (.getPlot chart)
-	y-axis (.getRangeAxis p)
-	x-axis (.getDomainAxis p)
-	white java.awt.Color/WHITE
-	black java.awt.Color/BLACK
-	axis-settings (fn [axis] (doto axis
-				   (.setAxisLineVisible true)
-				   (.setAxisLinePaint black)
-				   (.setLabelPaint black)
-				   (.setTickMarkPaint black)
-				   (.setTickLabelPaint black)))]
+        y-axis (.getRangeAxis p)
+        x-axis (.getDomainAxis p)
+        white java.awt.Color/WHITE
+        black java.awt.Color/BLACK
+        axis-settings (fn [axis] (doto axis
+                                   (.setAxisLineVisible true)
+                                   (.setAxisLinePaint black)
+                                   (.setLabelPaint black)
+                                   (.setTickMarkPaint black)
+                                   (.setTickLabelPaint black)))]
     (do
       (doto chart
-	(.setBackgroundPaint white))
+        (.setBackgroundPaint white))
       (doto p
-	(.setDomainGridlinesVisible false)
-	(.setRangeGridlinesVisible false)
-	(.setBackgroundPaint white))
+        (.setDomainGridlinesVisible false)
+        (.setRangeGridlinesVisible false)
+        (.setBackgroundPaint white))
       (axis-settings x-axis)
       (axis-settings y-axis))
     chart))
-	
+
 (defn log-y-axis!
   [chart]
   (let [plot (.getPlot chart)
-	old-axis (.getRangeAxis plot)
-	label (.getLabel old-axis)
-	label-font (.getLabelFont old-axis)
-	log-y-axis (LogarithmicAxis. label)]
-;;	 (.setStrictValuesFlag false)
+        old-axis (.getRangeAxis plot)
+        label (.getLabel old-axis)
+        label-font (.getLabelFont old-axis)
+        log-y-axis (LogarithmicAxis. label)]
+;;       (.setStrictValuesFlag false)
     (doto log-y-axis
       (.setLabelFont label-font)
       (.setAllowNegativesFlag true))
@@ -69,11 +69,11 @@
 (defn log-x-axis!
   [chart]
   (let [plot (.getPlot chart)
-	old-axis (.getDomainAxis plot)
-	label (.getLabel old-axis)
-	label-font (.getLabelFont old-axis)
-	log-x-axis (LogarithmicAxis. label)]
-;;	 (.setStrictValuesFlag false)
+        old-axis (.getDomainAxis plot)
+        label (.getLabel old-axis)
+        label-font (.getLabelFont old-axis)
+        log-x-axis (LogarithmicAxis. label)]
+;;       (.setStrictValuesFlag false)
     (doto log-x-axis
       (.setLabelFont label-font))
     (.setDomainAxis plot log-x-axis)
