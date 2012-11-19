@@ -136,27 +136,27 @@
     n))
 
 (defn ex1 []
-  (let [n (data-lines->seq "../neutrons/NeutronFramework/he3tube/data_He3Tube.dat")
+  (let [n (data-lines->seq "../neutrons/NeutronFramework/he3tube/data_He3Tube_mini_cylinder_source.dat")
         binning (make-linear-binning 0.0 500 30000.0)
         h1 (make-histogram "h2" binning n)
-        p (-> (plot [h1] {:title "Neutron" :xlabel "Energy" :ylabel "Counts"})
+        p (-> (plot [h1] {:title "Energy deposits in Helium" :xlabel "Energy (eV)" :ylabel "Counts"})
               log-y-axis!
               plain-plotting-style!)]
     (do
       (view p)
-      (save p "he3_rev2.png" :width 900 :height 700))))
+      (save p "he3_mini_cylinder.png" :width 900 :height 700))))
 
 (defn ex2 []
-  (let [d1 (data-lines->seq "../neutrons/NeutronFramework/he3tube/data_He3Tube.dat")
-        d2 (data-lines->seq "../neutrons/NeutronFramework/he3tube/data_He3Tube_normal_density.dat")
+  (let [d1 (data-lines->seq "../neutrons/NeutronFramework/he3tube/data_He3Tube_mini_cylinder_source.dat")
+        d2 (data-lines->seq "../neutrons/NeutronFramework/he3tube/data_He3Tube_cylinder_source.dat")
         binning (make-linear-binning 0.0 500 30000.0)
-        h1 (make-histogram "h1" binning d1)
-        h2 (make-histogram "h2" binning d2)
-        p (-> (plot [h1 h2] {:title "Neutron" :xlabel "Energy" :ylabel "Counts"})
+        h1 (make-histogram "Mini cylinder" binning d1)
+        h2 (make-histogram "Cylinder" binning d2)
+        p (-> (plot [h1 h2] {:title "Neutron" :xlabel "Energy" :ylabel "Counts" :legend true})
               log-y-axis!
               plain-plotting-style!)]
     (do
-      (set-x-label p "Energy")
-      (set-y-label p "Counts")
+;;      (set-x-label p "Energy")
+;;      (set-y-label p "Counts")
       (view p)
       (save p "hcomp.png" :width 900 :height 700))))
