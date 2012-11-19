@@ -69,6 +69,33 @@
              (recur (+ ind 1) (conj h new-bin)))
            {:name name :histo-type :histo-1d :data h})))))
 
+(defn cumulative-integral-right->left [histo]
+  (let [bins (reverse (:data histo))
+        sum-fn (fn [processed-bins new-bin]
+                 (let [latest-value (if (empty? processed-bins)
+                                      0.0
+                                      (:content (last processed-bins)))
+                       new-content  (+ latest-value (:content new-bin))
+                       new-bin-summed (conj new-bin {:content new-content})]
+                   (conj processed-bins new-bin-summed)))
+        new-bins (reverse (reduce sum-fn [] bins))
+        new-name (str (:name histo) "-cumulative-right->left")]
+    (conj histo {:data new-bins :name new-name})))
+
+
+(defn cumulative-integral-left->right [histo]
+  (let [bins (:data histo)
+        sum-fn (fn [processed-bins new-bin]
+                 (let [latest-value (if (empty? processed-bins)
+                                      0.0
+                                      (:content (last processed-bins)))
+                       new-content  (+ latest-value (:content new-bin))
+                       new-bin-summed (conj new-bin {:content new-content})]
+                   (conj processed-bins new-bin-summed)))
+        new-bins (reduce sum-fn [] bins)
+        new-name (str (:name histo) "-cumulative-left->right")]
+    (conj histo {:data new-bins :name new-name})))
+
 (defn histo1d-add [h1 h2]
   (let [data1 (:data h1)
         data2 (:data h2)
