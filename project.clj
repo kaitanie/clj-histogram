@@ -7,6 +7,5 @@
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [incanter "1.4.0" :exclusions [incanter/incanter-mongodb]]
                  [midje "1.4.0"]
-                 [org.clojure/tools.nrepl "0.2.0-beta9"]]
-  :plugins [[lein-midje "2.0.0-SNAPSHOT"]]
-)
+                 [org.clojure/tools.nrepl "0.2.0-beta10"]]
+  :plugins [[lein-midje "2.0.1"]])
