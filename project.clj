@@ -1,4 +1,4 @@
-(defproject clj-histogram "0.0.2-SNAPSHOT"
+(defproject clj-histogram "0.1.0"
   :description "Simple histogramming library for Clojure"
   :repositories {"incanter" "http://repo.incanter.org"}
   :dependencies [[org.clojure/clojure "1.4.0"]
