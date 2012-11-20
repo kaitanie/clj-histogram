@@ -122,12 +122,12 @@
 (defn example-cumulative-integral []
   (let [b (make-linear-binning -5.0 100 5.0)
         h1 (make-histogram "Gaussian" b (rndms 10000))
-        h2 (cumulative-integral-right->left h1)
-        h3 (cumulative-integral-left->right h1)]
-    (view (plot [h1 h2 h3] {:title "Gaussian integrated from left to right and right to left"
-                            :legend true})
-          log-y-axis!
-          plain-plotting-style!)))
+        h2 (histo-cumulative-integral :right->left h1)
+        h3 (histo-cumulative-integral :left->right h1)]
+    (view (-> (plot [h1 h2 h3] {:title "Gaussian integrated from left to right and right to left"
+                                :legend true})
+              log-y-axis!
+              plain-plotting-style!))))
 
 (defn data-lines->seq [file]
   (let [d (slurp file)
