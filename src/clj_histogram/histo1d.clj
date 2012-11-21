@@ -83,6 +83,14 @@
         new-bins                (direction-fn (reduce sum-fn [] bins))]
     (conj histo {:data new-bins :name new-name})))
 
+(defn histo1d-sum
+  "Sum over all bin contents in the histogram."
+  [histo]
+  (let [bin-contents (->> (:data histo)
+                          (map :content)
+                          )]
+    (reduce + bin-contents)))
+
 (defn histo1d-add [h1 h2]
   (let [data1 (:data h1)
         data2 (:data h2)
