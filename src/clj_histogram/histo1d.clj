@@ -91,6 +91,15 @@
                           )]
     (reduce + bin-contents)))
 
+(defn histo1d-divide
+  "Divides each histogram bin with a constant"
+  [histo divisor]
+  (let [bins (:data histo)
+        new-bins (map (fn [bin] (let [new-content (/ (:content bin) divisor)]
+                                 (conj bin {:content new-content})))
+                      bins)]
+    (conj histo {:data new-bins})))
+
 (defn histo1d-add [h1 h2]
   (let [data1 (:data h1)
         data2 (:data h2)
