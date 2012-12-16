@@ -1,6 +1,6 @@
 (defproject clj-histogram "0.4.0-SNAPSHOT"
   :description "Simple histogramming library for Clojure"
-  :url "http://gihub.com/kaitanie/clj-histogram"
+  :url "http://github.com/kaitanie/clj-histogram"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :repositories {"incanter" "http://repo.incanter.org"}
