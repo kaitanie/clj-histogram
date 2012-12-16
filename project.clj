@@ -1,4 +1,4 @@
-(defproject clj-histogram "0.3.0"
+(defproject clj-histogram "0.3.1"
   :description "Simple histogramming library for Clojure"
   :url "http://github.com/kaitanie/clj-histogram"
   :license {:name "Eclipse Public License"
