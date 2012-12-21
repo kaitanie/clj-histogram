@@ -20,7 +20,9 @@
         points {:x xpoints :y ypoints :name name}]
     points))
 
-(defn plot-histo [h]
+(defn plot-histo
+  "Plot one histogram and show the chart."
+  [h]
   (let [p (to-xy-step-points h)
         x (:x p)
         y (:y p)]
@@ -28,7 +30,9 @@
 
 (defn plain-plotting-style!
   "Set the graphics settings to bare-bones black text/lines on
-  white background style."
+  white background style.
+
+  Example usage: (-> chart plain-plotting-style! view)"
   [chart]
   (let [p (.getPlot chart)
         y-axis (.getRangeAxis p)
@@ -53,6 +57,9 @@
     chart))
 
 (defn log-y-axis!
+  "Use logarithmic y axis.
+
+   Example usage: (-> chart log-y-axis! view)"
   [chart]
   (let [plot (.getPlot chart)
         old-axis (.getRangeAxis plot)
@@ -67,6 +74,9 @@
     chart))
 
 (defn log-x-axis!
+  "Use logarithmic x axis
+
+   Example usage: (-> chart log-x-axis! view)"
   [chart]
   (let [plot (.getPlot chart)
         old-axis (.getDomainAxis plot)
@@ -79,7 +89,14 @@
     (.setDomainAxis plot log-x-axis)
     chart))
 
-(defn plot [histo-coll opt-map]
+(defn plot
+  "Plot a list of histograms with plotting options.
+
+   Available options: :title :xlabel :ylabel :legend (true/false)
+
+   Example usage: (plot [h1 h2 h3] {:title 'My histograms' :xlabel 'X
+   values' :ylabel 'Y values' :legend true})"
+  [histo-coll opt-map]
   (let [title (or (:title opt-map) (:name (first histo-coll)))
         xlabel (or (:xlabel opt-map) "X axis")
         ylabel (or (:ylabel opt-map) "Y axis")
@@ -104,7 +121,9 @@
                    :series-label name)))
     plot))
 
-(defn example-plot []
+(defn example-plot
+  "Histogram plotting example"
+  []
   (let [b (make-linear-binning -10.0 100 10.0)
         h1 (make-histogram "h1" b (rndms 100000))
         h2 (make-histogram "h2" b (rndms 100000))
@@ -119,7 +138,9 @@
       (save-pdf chart pdf-file)
       (println (str "Generated plot saved as " pdf-file)))))
 
-(defn example-cumulative-integral []
+(defn example-cumulative-integral
+  "Example of cumulative integral"
+  []
   (let [b (make-linear-binning -5.0 100 5.0)
         h1 (make-histogram "Gaussian" b (rndms 10000))
         h2 (histo-cumulative-integral :right->left h1)
